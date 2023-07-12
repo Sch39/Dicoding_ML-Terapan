@@ -324,26 +324,26 @@ dari gambar diatas dapat diketahui bahwa model dengan nilai MCC tertinggi adalah
 Dari beberapa sumber yang telah saya jabarkan, ternyata grafik yang paling diandalkan dalam pemilihan performance dari model klasifikasi untuk data imbalance adalah MCC, sehingga prioritas untuk pemilihan matrik dari paling utama yaitu MCC, ROC AUC dan Accuracy. Dari semua model, model dengan nilai MCC tertinggi adalah model RFC dan ternyata diikuti dengan nilai ROC AUC yang tertinggi pula, sedangkan nilai Accuracy kemungkinan tidak terlalu dapat diandalkan untuk data imbalance ini dengan nilai yang cukup rendah yaitu 96,95%. Maka, model dengan performa terbaik yaitu RFC(RandomForestClassifier).
 
 # Daftar Referensi
-[1] *Mike*. (2020, Agustus 18). Milling Machines: What are They and What Do They Do?. Diakses dari https://dtsuk.co.uk/uncategorized/milling-machines-what-are-they-and-what-do-they-do. {#ref-1}
+[1] *Mike*. (2020, Agustus 18). Milling Machines: What are They and What Do They Do?. Diakses dari https://dtsuk.co.uk/uncategorized/milling-machines-what-are-they-and-what-do-they-do. <span id='ref-1'></span>
 
-[2] *Hesser, D. F., & Markert, B*. (2019). Tool wear monitoring of a retrofitted CNC milling machine using artificial neural networks. Manufacturing letters, 19, 1-4. {#ref-2}
+[2] *Hesser, D. F., & Markert, B*. (2019). Tool wear monitoring of a retrofitted CNC milling machine using artificial neural networks. Manufacturing letters, 19, 1-4. <span id='ref-2'></span>
 
-[3] *Mobley, R. Keith*. An introduction to predictive maintenance. Elsevier, 2002. {#ref-3}
+[3] *Mobley, R. Keith*. An introduction to predictive maintenance. Elsevier, 2002. <span id='ref-3'></span>
 
-[4] *Agrawal, Kumar Sumeet*. (2021, July 20). Metrics to Evaluate your Classification Model to take right decisions. Diakses dari https://www.analyticsvidhya.com/blog/2021/07/metrics-to-evaluate-your-classification-model-to-take-the-right-decisions. {#ref-4}
+[4] *Agrawal, Kumar Sumeet*. (2021, July 20). Metrics to Evaluate your Classification Model to take right decisions. Diakses dari https://www.analyticsvidhya.com/blog/2021/07/metrics-to-evaluate-your-classification-model-to-take-the-right-decisions. <span id='ref-4'></span>
 
-[5] *Tingle, Max*. (2019, November 2019). Preventing Data Leakage in Your Machine Learning Model. Diakses dari https://towardsdatascience.com/preventing-data-leakage-in-your-machine-learning-model-9ae54b3cd1fb. {#ref-5}
+[5] *Tingle, Max*. (2019, November 2019). Preventing Data Leakage in Your Machine Learning Model. Diakses dari https://towardsdatascience.com/preventing-data-leakage-in-your-machine-learning-model-9ae54b3cd1fb. <span id='ref-5'></span>
 
-[6] *Vickery, Rebecca*. (2021, Desember 8). 8 Metrics to Measure Classification Performance. Diakses dari https://towardsdatascience.com/8-metrics-to-measure-classification-performance-984d9d7fd7aa. {#ref-6}
+[6] *Vickery, Rebecca*. (2021, Desember 8). 8 Metrics to Measure Classification Performance. Diakses dari https://towardsdatascience.com/8-metrics-to-measure-classification-performance-984d9d7fd7aa. <span id='ref-6'></span>
 
-[7] *Klein, Bernd*. (2023, Juni 16). Diakses dari https://python-course.eu/machine-learning/k-nearest-neighbor-classifier-with-sklearn.php. {#ref-7}
+[7] *Klein, Bernd*. (2023, Juni 16). Diakses dari https://python-course.eu/machine-learning/k-nearest-neighbor-classifier-with-sklearn.php. <span id='ref-7'></span>
 
-[8] *Scikit-learn*. Diakses dari https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html. {#ref-8}
+[8] *Scikit-learn*. Diakses dari https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html. <span id='ref-8'></span>
 
-[9] *Banerjee, Prashant*. (2020). Diakses dari https://www.kaggle.com/code/prashant111/svm-classifier-tutorial. {#ref-9}
+[9] *Banerjee, Prashant*. (2020). Diakses dari https://www.kaggle.com/code/prashant111/svm-classifier-tutorial. <span id='ref-9'></span>
 
-[10] *Tutorialpoint*. Diakses dari https://www.tutorialspoint.com/scikit_learn/scikit_learn_gaussian_naive_bayes.htm. {#ref-10}
+[10] *Tutorialpoint*. Diakses dari https://www.tutorialspoint.com/scikit_learn/scikit_learn_gaussian_naive_bayes.htm. <span id='ref-10'></span>
 
-[11] *Chen, James*. (2023, Maret 30). Diakses dari https://www.investopedia.com/terms/n/normaldistribution.asp. {#ref-11}
+[11] *Chen, James*. (2023, Maret 30). Diakses dari https://www.investopedia.com/terms/n/normaldistribution.asp. <span id='ref-11'></span>
 
-[12] *Nelson, Dan*. Diakse dari https://stackabuse.com/gradient-boosting-classifiers-in-python-with-scikit-learn. {#ref-12}
+[12] *Nelson, Dan*. Diakse dari https://stackabuse.com/gradient-boosting-classifiers-in-python-with-scikit-learn. <span id='ref-12'></span>
