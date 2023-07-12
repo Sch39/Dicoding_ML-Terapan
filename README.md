@@ -5,7 +5,7 @@
 <a href="https://www.dicoding.com">
             <img src="https://dicoding-web-img.sgp1.cdn.digitaloceanspaces.com/original/commons/new-ui-logo.png" alt="Dicoding Indonesia" width="50" >
         </a> 
-<br><br>
+<br>
 
 ## Project Predictive Analytics
 <img src='https://res.cloudinary.com/da0hsihog/image/upload/v1688719861/Portofolio/7140739_3515462_wqxkir.jpg' height='200px'>
@@ -14,7 +14,6 @@
 
 
 [<img src="https://res.cloudinary.com/da0hsihog/image/upload/v1688721420/Portofolio/read-more_o26oyf.png" height='25'>](<https://github.com/Sch39/Dicoding_ML-Terapan/blob/master/Predictive%20Analytics/README.md>)
-
 <br>
 
 ## Project System Recommender
