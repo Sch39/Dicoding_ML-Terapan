@@ -5,24 +5,45 @@ Source by <a href="https://www.freepik.com/free-photo/worker-operating-industria
 
 
 ## Domain Proyek
+<!-- Rubrik/Kriteria Tambahan (Opsional):
+
+  -  Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
+
+ -   Menyertakan hasil riset terkait atau referensi. Referensi yang diberikan harus berasal dari sumber yang kredibel dan author yang jelas. -->
 
 Mesin *Milling* sangat sering ditemukan pada dunia industri. Mesin ini biasanya digunakan untuk mengurangi material dari sebuah benda kerja menggunakan *rotary cutters*. Mesin ini mencakup proses *drilling, boring* dan *cut* yang dapat dikombinasikan untuk membentuk suatu *part*. [[1]](#ref-1).
 
 Semua mesin pasti terdapat kemungkinan untuk rusak, sehingga diperlukan *maintenance*. *Predictive Maintenance* meningkatkan kualitas dan keandalan manufaktur dibandingkan dengan *Preventive Maintenance* [[2](#ref-2)]. *Preventive maintenace* merupakan perawatan yang dilakukan secara rutin terhadap mesin untuk mencegah mesin rusak dikemudian hari, sementara *Predictive Maintenance* dilakukan dengan cara memonitoring kinerja dari dari mesin melalui sensor-sensor dengan tujuan untuk mendeteksi masalah pada mesin dan mencegah kegagalan mesin (rusak), sehingga mesin dapat dihentikan sementara untuk mencegah cacat produk[[3](#ref-3)]. Hal tersebutlah yang menjadi sebab diperlukannya *Predictive Maintenance* pada mesin *Milling* sehingga *part* yang diproses dengannya tidak mengalami cacat karena kegagalan mesin.
 
+
+
 ## Business Understanding
+
+<!-- # Rubrik/Kriteria Tambahan (Opsional):
+
+  -  Menambahkan bagian “Solution Statement” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut:
+
+## Solution statements
+
+- Mengajukan 2 atau lebih solution statement. Misalnya, menggunakan dua atau lebih algoritma untuk mencapai solusi yang diinginkan atau melakukan improvement pada baseline model dengan hyperparameter tuning.
+-  Solusi yang diberikan harus dapat terukur dengan metrik evaluasi. -->
 
 ### Problem Statements
 
 Menjelaskan pernyataan masalah latar belakang:
 - Fitur apa yang paling berpengaruh terhadap kegagalan mesin (machine failure)?
-- Bagaimana kondisi mesin saat menerima input dari sensor dengan nilai tertentu?
+- Bagaimana cara memilih/membuat model yang terbaik untuk mem-prediksi kegagalan mesin?
 
 ### Goals
 
 Menjelaskan tujuan dari pernyataan masalah:
-- Mengetahui fitur yang paling berkorelasi dengan gagal atau tidak nya mesin
-- Membuat model machine learning yang dapat memprediksi kapan saat mesin untuk gagal
+- Melakukan pre-processing data untuk fitur yang paling berkorelasi dengan gagal atau tidak nya mesin dari tabel correlation
+- Membuat model machine learning yang dapat memprediksi kapan saat mesin untuk gagal dengan algoritma KNeighbors Classifier, Random Forest Classifier, Support Vector Classification, GaussianNB, Gradient Boosting Classifier
+- Untuk pemilihan model terbaik dapat dilakukan sebagai berikut.
+  - menghitung metrik yang menjadi acuan dalam memilih model terbaik yaitu ROC AUC score dan MCC, sedangkan accuracy hanya sekedar mengetahui nilai nya karena dataset bersifat imbalance.
+  - berikut merupakan rumus ROC AUC score
+  AUC\left ( f \right ) = P\left ( f\left ( x \right ) \right ) < f\left ( y \right ) | C\left ( x \right ) =  0, C\left ( y \right ) = 1
+  - berikut merupakan rumus ROC AUC score
 
 ### Metodologi
 Mengetahui kapan akan terjadinya kegagalan mesin merupakan tujuan yang ingin dicapai, guna mencegah terjadinya kerusakan mesin yang lebih parah dan akan memakan lebih banyak waktu dan biaya. Oleh karena itu, perlu diketahui kapan terjadinya kegagalan ketika masing-masing sensor mengirimkan nilai ke model dengan output berupa pilihan antara mesin berjalan normal ataupun gagal. Oleh karena nilai dari kegagalan bersifat diskrit atau kategorikal sehingga permasalahan dapat diselesaikan dengan cara klasifikasi.
@@ -35,7 +56,14 @@ Metrik yang akan digunakan untuk kasus klasifikasi ini yaitu *accuracy*, *ROC AU
 
 ![mcc](https://miro.medium.com/v2/resize:fit:786/format:webp/1*ju2jMm4IsJmQzjYU8l8Mig.png) source by [[6](#ref-6)]
 
+
+
+
 ## Data Understanding
+
+<!-- # Rubrik/Kriteria Tambahan (Opsional):
+
+  -  Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data atau exploratory data analysis. -->
 
 Data yang digunakan merupakan data dari *kaggle* yang berisi tentang catatan terkait sensor-sensor pada mesin *milling* disertai kegagalan dan jenis-jenisnya [Predictive Maintenance Dataset (AI4I 2020)](https://www.kaggle.com/datasets/stephanmatzka/predictive-maintenance-dataset-ai4i-2020).
 
@@ -55,7 +83,8 @@ Kondisi kegagalan mesin dibagi menjadi 5 yaitu.
 2. heat dissipation failure (HDF): heat dissipation causes a process failure, if the difference between air- and process temperature is below 8.6 K and the tools rotational speed is below 1380 rpm. This is the case for 115 data points.
 3. power failure (PWF): the product of torque and rotational speed (in rad/s) equals the power required for the process. If this power is below 3500 W or above 9000 W, the process fails, which is the case 95 times in our dataset.
 4. overstrain failure (OSF): if the product of tool wear and torque exceeds 11,000 minNm for the L product variant (12,000 M, 13,000 H), the process fails due to overstrain. This is true for 98 datapoints.
-5. random failures (RNF): each process has a chance of 0,1 % to fail regardless of its process parameters. This is the case for only 5 datapoints, less than could be expected for 10,000 datapoints in our dataset. 
+5. random failures (RNF): each process has a chance of 0,1 % to fail regardless of its process parameters. This is the case for only 5 datapoints, less than could be expected for 10,000 datapoints in our dataset.
+
 
 ### Informasi Dataset
 ```
@@ -88,6 +117,13 @@ Informasi yang didapat dari hasil diatas antara lain:
 *  Terdapat 3 kolom bertipe Float, yaitu: Air temperature [K], Process temperature [K] dan Torque [Nm]. Kolom tersebut merupakan fitur numerik hasil pembacaan sensor.
 
 ### Analisis Deskriptif
+
+<!-- # Rubrik/Kriteria Tambahan (Opsional):
+
+  -  Menjelaskan proses data preparation yang dilakukan
+    Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut. -->
+
+
 Karena tipe data masih bercampur, antara int64 dan float untuk data number, maka perlu dijadikan satu format menjadi float untuk seluruh data number. Sementara itu, penamaan kolom masih mengandung spasi dan tanda lain, sehingga akan saya rubah spasi dan karakter spesial dengan *underscore* untuk mempermudah pemanggilan kelas.Berikut merupakan hasil derskriptif statistik untuk semua data number.
 ![desc analyst](../assets/desc-analyst.PNG)
 Hasil analisis
@@ -138,6 +174,13 @@ data.drop(['udi', 'product_id', 'twf','hdf','pwf','osf','rnf', 'type'],axis=1,in
 ```
 
 ## Data Preparation
+
+<!-- # Rubrik/Kriteria Tambahan (Opsional):
+
+  -  Menjelaskan proses data preparation yang dilakukan
+    Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut. -->
+
+
 Teknik yang digunakan pada dataset adalah sebagai berikut.
 - Karena fitur kategorikal machine_failure telah terformat dengan benar (1 atau 0) sehingga tidak perlu melakukan *Encoding* kategori
 - Reduksi variabel dengan PCA
@@ -147,6 +190,7 @@ Teknik yang digunakan pada dataset adalah sebagai berikut.
 Proses normalisasi dilakukan setelah *splitting* untuk mencegah informasi bocor [[5](#ref-5)]
 
 Untuk melakukan normalisasi menggunakan kode berikut.
+
 ```
 # mereduksi fitur
 from sklearn.decomposition import PCA
@@ -200,6 +244,14 @@ Hasil normalisasi sesuai tabel berikut.
 ![norm-test](../assets/norm-test.PNG)
 
 ## Modeling
+
+<!-- # Rubrik/Kriteria Tambahan (Opsional):
+
+  -  Menjelaskan kelebihan dan kekurangan dari setiap algoritma yang digunakan.
+  -  Jika menggunakan satu algoritma pada solution statement, lakukan proses improvement terhadap model dengan hyperparameter tuning. Jelaskan proses improvement yang dilakukan.
+  -  Jika menggunakan dua atau lebih algoritma pada solution statement, maka pilih model terbaik sebagai solusi. Jelaskan mengapa memilih model tersebut sebagai model terbaik. -->
+
+
 Pada tahap ini akan dikembangkan model *machine learning* untuk data menggunakan algoritma KNN, *Random Forest*, *Support Vector Machine*, *Gaussian Naive Bayes*, dan *GradientBoosting*. Sebelum membuat model, terlebih dahulu kita membuat sebuah dataframe untuk menyimpan nilai matrik dan function untuk pelatihan model.
 ```
 # Siapkan dataframe untuk analisis model
@@ -283,6 +335,12 @@ train_model(algorith=boosting, algorith_name='GradientBoostingClassifier', x_tra
 ```
 
 ## Evaluation
+
+# Rubrik/Kriteria Tambahan (Opsional):
+
+  -  Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+
+
 Model yang digunakan adalah klasifikasi biner dengan metrik evaluasi sebagai berikut.
 - accuracy
 - ROC AUC score
