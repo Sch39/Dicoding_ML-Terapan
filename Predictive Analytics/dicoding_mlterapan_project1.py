@@ -118,9 +118,6 @@ for column in data.columns:
     except:
         pass
 
-# cek deskripsi statistik data
-data.describe(include='all').T
-
 # rename agar nama menjadi lowercase dan tidak ada whitespace
 for column in data:
     try:
@@ -132,8 +129,8 @@ for column in data:
     except:
       pass
 
-# cek deskripsi statistik data untuk kolom bertipe data numerik
-data.select_dtypes(include=[np.number]).describe(include='all').T
+# cek deskripsi statistik data
+data.describe()
 
 """### Exploratory Data Analysis - Missing Value dan Outliers
 Karena data tidak memiliki *missing value* maka tidak akan diproses, sementara *outliers* tidak akan dilakukan pada dataset, mengingat setelah saya coba lakukan ternyata data machine failure hanya menyisakan sedikit informasi.
@@ -177,11 +174,6 @@ data.drop(['udi', 'product_id', 'twf','hdf','pwf','osf','rnf', 'type'],axis=1,in
 
 data
 
-data.describe(include='all').T
-
-# ubah data kategorikal
-data = pd.get_dummies(data,drop_first=True)
-
 # buat array untuk mengelompokkan data kategorikal dan numerikal
 numerical_features = ['air_temperature_k','process_temperature_k', 'rotational_speed_rpm', 'torque_nm', 'tool_wear_min']
 categorical_features = ['machine_failure']
@@ -196,26 +188,32 @@ categorical_features = ['machine_failure']
 data.head()
 
 """### Reduksi dimensi dengan Principal Component Analysis (PCA)
-Karena fitur air_temperature_k dan process_temperature_k memiliki satuan yang sama dan saling berkorelasi, maka PCA dapat diterapkan untuk mereduksinya dan menjadi fitur baru berupa degree atau suhu.
+Karena fitur air_temperature_k dan process_temperature_k memiliki satuan yang sama dan saling berkorelasi, maka PCA dapat diterapkan untuk mereduksinya dan menjadi fitur baru berupa temperature atau suhu.
 """
 
 sns.pairplot(data[['air_temperature_k','process_temperature_k']], plot_kws={"s": 3});
 
 # mereduksi fitur
 from sklearn.decomposition import PCA
+
+pca = PCA(n_components=2, random_state=123)
+pca.fit(data[['air_temperature_k','process_temperature_k']])
+princ_comp  = pca.transform(data.loc[:, ('air_temperature_k','process_temperature_k')]).flatten()
+pca.explained_variance_ratio_.round(3)
+
 pca = PCA(n_components=1, random_state=123)
 pca.fit(data[['air_temperature_k','process_temperature_k']])
-data['degree'] = pca.transform(data.loc[:, ('air_temperature_k','process_temperature_k')]).flatten()
+data['temperature'] = pca.transform(data.loc[:, ('air_temperature_k','process_temperature_k')]).flatten()
 data.drop(['air_temperature_k','process_temperature_k'], axis=1, inplace=True)
 
-data.head()
+data.head(2)
 
 """### Split Train Test
 Membagi dataset ke dalam train dan split dengan presentasi 80:20
 """
 
 # memperbarui data kategorikal
-numerical_features = ['degree', 'rotational_speed_rpm', 'torque_nm', 'tool_wear_min']
+numerical_features = ['temperature', 'rotational_speed_rpm', 'torque_nm', 'tool_wear_min']
 # split data train test
 from sklearn.model_selection import train_test_split
 
@@ -227,24 +225,26 @@ print(f'Total # of sample in whole dataset: {len(X)}')
 print(f'Total # of sample in train dataset: {len(X_train)}')
 print(f'Total # of sample in test dataset: {len(X_test)}')
 
-"""### Normalization"""
+"""### Standardization"""
 
-# Normalisasi data
+# Standarisasi data
 from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
 
-# Normalize Training Data
+# Standarisasi Training Data
 scaler.fit(X_train[numerical_features])
 X_train[numerical_features] = scaler.transform(X_train.loc[:, numerical_features])
 print('Normalized Training Data\n')
 X_train[numerical_features].head()
 
-# Normalize Testing Data
+# Standarisasi Testing Data
 scaler.fit(X_test[numerical_features])
 X_test[numerical_features] = scaler.transform(X_test.loc[:, numerical_features])
-print('Normalized Testing Data\n')
+print('Standarisasi Testing Data\n')
 X_test[numerical_features].head()
+
+data.describe()
 
 """## Modelling
 - Membuat model machine learning untuk menyelesaikan permasalahan.
@@ -254,14 +254,14 @@ X_test[numerical_features].head()
 - Jika menggunakan dua atau lebih algoritma pada solution statement, maka pilih model terbaik sebagai solusi. Jelaskan mengapa memilih model tersebut sebagai model terbaik.
 
 ### Metrik
-Membuat metrik yang akan digunakan untuk evaluasi, menackup nilai accuracy dan *ROC AUC Score* dengan mendefinisikan function.
+Membuat metrik yang akan digunakan untuk evaluasi, mencakup *ROC AUC Score* dan MCC dengan mendefinisikan function.
 """
 
-from sklearn.metrics import accuracy_score, roc_auc_score, matthews_corrcoef
+from sklearn.metrics import roc_auc_score, matthews_corrcoef
 
 # Siapkan dataframe untuk analisis model
 import time
-model_performance = pd.DataFrame(columns=['Accuracy', 'ROC AUC score','MCC score','time to train','time to predict','total time'])
+model_performance = pd.DataFrame(columns=['ROC AUC score','MCC score','time to train','time to predict','total time'])
 list(model_performance)
 
 # Commented out IPython magic to ensure Python compatibility.
@@ -274,17 +274,15 @@ def train_model(algorith, algorith_name, x_train, x_test, y_train):
   y_predictions = model.predict(x_test)
   end_predict = time.time()
 
-  accuracy = accuracy_score(y_test, y_predictions)
   MCC = matthews_corrcoef(y_test, y_predictions)
   ROC_AUC = roc_auc_score(y_test, y_predictions, average='weighted')
 
-  print("Accuracy: "+ "{:.2%}".format(accuracy))
   print("MCC: "+ "{:.2%}".format(MCC))
   print("ROC AUC score: "+ "{:.2%}".format(ROC_AUC))
   print("time to train: "+ "{:.2f}".format(end_train-start)+" s")
   print("time to predict: "+"{:.2f}".format(end_predict-end_train)+" s")
   print("total: "+"{:.2f}".format(end_predict-start)+" s")
-  model_performance.loc[algorith_name] = [accuracy, ROC_AUC,MCC,end_train-start,end_predict-end_train,end_predict-start]
+  model_performance.loc[algorith_name] = [ROC_AUC,MCC,end_train-start,end_predict-end_train,end_predict-start]
 
 """### KNeighborsClassifier"""
 
@@ -305,30 +303,6 @@ from sklearn.ensemble import RandomForestClassifier
 rfc = RandomForestClassifier()
 train_model(algorith=rfc, algorith_name='RFC', x_train=X_train, x_test=X_test, y_train=y_train)
 
-"""### Support Vector Classification"""
-
-from sklearn.svm import SVC
-
-svc = SVC(probability=True)
-
-train_model(algorith=svc, algorith_name='SVC', x_train=X_train, x_test=X_test, y_train=y_train)
-
-"""### GaussianNB"""
-
-from sklearn.naive_bayes import GaussianNB
-
-gnb = GaussianNB()
-
-train_model(algorith=gnb, algorith_name='GaussianNB', x_train=X_train, x_test=X_test, y_train=y_train)
-
-"""### GradientBoostingClassifier"""
-
-from sklearn.ensemble import GradientBoostingClassifier
-
-boosting = GradientBoostingClassifier(learning_rate=0.05, random_state=55)
-
-train_model(algorith=boosting, algorith_name='GradientBoostingClassifier', x_train=X_train, x_test=X_test, y_train=y_train)
-
 model_performance
 
 """## Evaluation
@@ -336,29 +310,6 @@ model_performance
 - Menjelaskan hasil proyek berdasarkan metrik evaluasi.
 - Metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
 - Menjelaskan metrik evaluasi yang digunakan untuk mengukur kinerja model. Misalnya, menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
-
-### Accuracy
-Merupakan nilai yang didapatlan dari pembagian dari jumlah prediksi yang benar dengan jumlah total prediksi dengan rentang 0-1 atau diubah ke persentase 0-100%.
-
-![rumus accuracy](https://cdn-images-1.medium.com/max/800/1*R6jP_uvlkcxtQSa264N3Sw.png)
-
-Source by [[analyticsvidhya](https://www.analyticsvidhya.com/blog/2021/07/metrics-to-evaluate-your-classification-model-to-take-the-right-decisions)]
-
-Metrik akurasi memiliki keterbatasan dimana ketika digunakan untuk data Imbalance maka dapat menimbulkan kesalahan [[towardsdatascience](https://towardsdatascience.com/8-metrics-to-measure-classification-performance-984d9d7fd7aa)].
-
-### ROC AUC
-Kurva ROC sangat cocok digunakan untuk data yang imbalance. AUC merupakan nilai yang berada dibawah kurva TPR(*true positive rate*) - FPR (*false positive rate*) [[analyticsvidhya](https://www.analyticsvidhya.com/blog/2021/07/metrics-to-evaluate-your-classification-model-to-take-the-right-decisions)].
-
-![grafik roc](https://cdn-images-1.medium.com/max/800/1*bpjCSt38NydElzPf6O5Xng.png)
-
-Source by [analyticsvidhya](https://www.analyticsvidhya.com/blog/2021/07/metrics-to-evaluate-your-classification-model-to-take-the-right-decisions)
-
-# MCC(Matthews Correlation Coefficient)
-MCC dikenal sebagai salah satu metode terkenal dalam menilai performa suatu model klasifikasi. Metrik ini berfungsi sebagai koefisien korelasi yang menggambarkan sejauh mana hubungan antara hasil klasifikasi yang teramati dengan hasil klasifikasi yang diprediksi. Rentang nilai MCC mirip dengan koefisien korelasi lainnya, yaitu antara -1,0 hingga +1,0. Apabila nilai MCC mencapai +1, hal ini menunjukkan bahwa model memiliki performa yang optimal atau sempurna [[medium](https://towardsdatascience.com/8-metrics-to-measure-classification-performance-984d9d7fd7aa)].
-
-![mcc](https://miro.medium.com/v2/resize:fit:786/format:webp/1*ju2jMm4IsJmQzjYU8l8Mig.png)
-
-source by [medium](https://towardsdatascience.com/8-metrics-to-measure-classification-performance-984d9d7fd7aa)
 """
 
 model_performance.fillna(.90,inplace=True)
@@ -370,9 +321,7 @@ model_performance.style.background_gradient(cmap='coolwarm').format({'Accuracy':
                                                                      'total time':'{:.1f}',
                                                                      })
 
-"""Berdasarkan metrik tersebut, terdapat model yang memiliki akurasi tinggi namun nilai ROC AUC dan MCC yang rendah, dan dikarenakan dataset bersifat imbalance maka matrik untuk rujukan utama yaitu ROC AUC dan MCC, sehingga didapatkan 3 model terbaik adalah KNN, RFC dan GradientBoostingClassifier."""
-
-model_dict = {'KNC': knc, 'RFC': rfc, 'GradientBoostingClassifier': boosting, 'SVC':svc, 'GaussianNB':gnb}
+model_dict = {'KNC': knc, 'RFC': rfc}
 
 prediksi = X_test.iloc[:-50].copy()
 pred_dict = {'y_true':y_test[:-50]}
